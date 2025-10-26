@@ -1,3 +1,65 @@
+<style>
+/* CSS to override RTL settings inside the sidebar,
+    forcing text and elements to align to the left (LTR).
+*/
+
+.main-sidebar,
+.main-sidebar * {
+    /* Set the direction for the entire sidebar content to LTR */
+    direction: ltr !important; 
+    /* Force text alignment to the left for all text within the sidebar */
+    text-align: left !important;
+}
+
+/* Specific overrides for AdminLTE components to fix spacing and alignment */
+
+/* Fix the logo/brand link alignment */
+.brand-link {
+    text-align: left !important;
+}
+
+/* Fix the alignment of main nav links (icons and text) */
+.nav-sidebar .nav-link {
+    /* Removes any right padding added by RTL and forces LTR flow */
+    padding-right: 0.5rem !important; 
+    padding-left: 1rem !important;
+}
+
+/* Fix the alignment of the text within the link */
+.nav-sidebar .nav-link p {
+    /* Push the text to the left */
+    margin-right: 0 !important; 
+    margin-left: 0.5rem !important; 
+}
+
+/* Fix the position of the main navigation icons */
+.nav-sidebar .nav-icon {
+    /* Ensure the icon is on the far left */
+    margin-right: 0 !important; 
+    margin-left: 0.2rem !important;
+}
+
+/* Fix the position of the arrow/chevron icon in treeview items */
+.nav-sidebar .right {
+    /* Push the chevron icon to the right side of the container */
+    right: 0.5rem !important;
+    left: auto !important; 
+}
+
+/* Fix the alignment of the user panel text */
+.user-panel .info {
+    padding-left: 5px !important;
+    padding-right: 0 !important;
+}
+
+/* Fix alignment for form elements like the category input/button */
+#catinput {
+    text-align: left !important;
+}
+</style>
+
+
+
 
  <!-- Main Sidebar Container -->
   <aside style="position: fixed;" class="main-sidebar sidebar-dark-primary elevation-4">
