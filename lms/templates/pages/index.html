@@ -149,11 +149,15 @@
           <!-- Categories -->
   
           <div class="row justify-content-center mb-3">
-            <div class="col-4 ">
-              <ul class="nav">
+            <div class="col-8 ">
+              <ul class="nav justify-content-center flex-wrap">
             {% for cat in category|slice:'4' %}
-                <li class="nav-item cat{{cat.id}} ">
-                  <a id="" class="nav-link bg-primary" href="#">{{cat.name}}</a>
+                <li class="nav-item cat{{cat.id}} mx-2 mb-2" style="flex: 1 1 20%; max-width: 20%; ">
+                  <a class="nav-link bg-primary text-white text-center fw-bold py-3" 
+                    href="#" 
+                    style="font-size: 1.5rem; font-weight: 700; border-radius: 10px;">
+                    {{cat.name}}
+                  </a>
                 </li>
             {% endfor %} 
               </ul>
