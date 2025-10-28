@@ -83,7 +83,7 @@
                 <div class="card-body">
                   <div class="d-flex">
                     <p class="d-flex flex-column">
-                      <span id="totalsalarys" class="text-bold text-lg">$</span><br></p>
+                      <span id="totalsalarys" class="text-bold text-lg" style="font-size: 1.5rem; font-weight: bold;" dir="ltr" >$</span><br></p>
                   </div>
                   <!-- /.d-flex -->
   
@@ -91,16 +91,25 @@
                     <canvas id="sales-chart" height="160"></canvas>
                   </div>
   
-                  <div class="d-flex flex-row justify-content-end">
-                    <span class="mr-2">
-                      <i class="fas fa-square text-primary"></i> Profits from Book Sales
-                      <p id="soldtotals"></p>     
-                    </span>
-                    <span>
-                      <i class="fas fa-square text-gray"></i> Profits from Book Rentals
-                      <p id="rentedtotals"></p>
-                    </span>
-                  </div>
+                <div class="d-flex flex-row justify-content-center text-center" dir="ltr">
+                  <span class="d-flex flex-column align-items-center mr-5">
+                    <div class="d-flex align-items-center justify-content-center">
+                      <i class="fas fa-square text-primary mr-2"></i>
+                      <span>&nbsp;Profits from Book Sales</span>
+                    </div>
+                    <p id="soldtotals" class="mb-0"></p>
+                  </span>
+
+                  <span class="d-flex flex-column align-items-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                      <i class="fas fa-square text-gray mr-2"></i>
+                      <span>&nbsp;Profits from Book Rentals</span>
+                    </div>
+                    <p id="rentedtotals" class="mb-0"></p>
+                  </span>
+                </div>
+
+                    
                 </div>
               </div>
             </div>
@@ -111,7 +120,7 @@
   
           <!-- form add books -->
           <div class="row m-1 mb-3">   
-            <a href="#bookform" class="btn btn-primary" data-toggle="collapse"> Add Book </a>
+            <a href="#bookform" class="btn btn-primary" data-toggle="collapse">+ Add Book </a>
           </div>
           
           <div id="bookform" class="card card-primary collapse">
