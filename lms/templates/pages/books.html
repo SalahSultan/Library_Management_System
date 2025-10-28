@@ -1,84 +1,72 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div style="direction: ltr;" class="wrapper">
-      <!-- Content Wrapper. Contains page content -->
-      <div   class="content-wrapper p-5">
-        <!-- Content Header (Page header) -->
-
-                <div class="row mb-2">
-                  <div class="col-sm-6">
-                    <h1>Books</h1>
-                  </div>
-   
-                </div>
-            </section>
-        
-            <!-- Main content -->
-            <section class="content">                  
-              <!-- Default box -->
-              <div class="card card-solid">
-                <div class="card-body pb-0">
-                  <div class="row d-flex align-items-stretch">
-                  {% for book in books %}  
-                    <!-- بداية الكتاب -->
-                    <div   class="col-12 col-sm-6 col-md-4 bookhide book{{book.category.id}} book{{book.status}} ">
-                      <div  id="" class="card bg-light">
-                        <div  class="card-header text-muted border-bottom-0">
-                          {{book.category}}
-                        </div>
-                        <div class="card-body pt-0">
-                          <div class="row">
-                            <div class="col-7">
-                              <h2 class="lead"><b>{{book.title}} </b></h2>
-                              <ul class="  fa-ul text-muted">
-                                <li class="small"><span class="fa-li"></span>Status: {{book.status}} </li>
-                                {% if book.status == 'rental' %}
-                                <li class="small"><span class="fa-li"></span>Rental Price: {{book.retal_price_day}} </li>
-                                {% else %}
-                                <li class="small"><span class="fa-li"></span>Price: {{book.price}} </li>
-                                {% endif %}
-                              </ul>
-                            </div>
-                            <div class="col-5 text-center">
-                            {% if book.photo_book %}  
-                                <img style="height: 120px; width: 120px;"  src="{{book.photo_book.url}}" alt="" class="img-circle img-fluid">
-                            {% else %}
-                                <img style="height: 120px; width: 120px;"  src="{% static 'dist/img/photo1.png' %}" alt="" class="img-circle img-fluid">
-                            {% endif %}  
-                              </div>
-                          </div>
-                        </div>
-                        <div class="card-footer">
-                          <div class="text-right">
-                            <a href="{% url 'delete' book.id %}" class="btn btn-sm bg-danger">
-                              <i class="fas fa-trash"></i>
-                            </a>
-                            <a href="{% url 'update' book.id %}" class="btn btn-sm btn-primary">
-                              <i class="fas fa-book"></i> Update
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      
-                    </div>
-                     <!-- نهاية الكتاب -->
-                  {% endfor %}
-                 
-                  </div>
-                </div>
-                <!-- /.card-body -->
-  
-                <!-- /.card-footer -->
-              </div>
-              <!-- /.card -->
-        
-            </section>
-            <!-- /.content -->
-          </div>
-          <!-- /.content-wrapper -->
-        
+<div style="direction: ltr;" class="wrapper">
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper p-5">
+    <!-- Content Header (Page header) -->
+    <div class="row mb-2">
+      <div class="col-12">
+        <!-- Centered and bold "Books" title -->
+        <h1 class="text-center font-weight-bold">Books</h1>
       </div>
-      <!-- /.content-wrapper -->
     </div>
+
+    <!-- Main content -->
+    <section class="content">                  
+      <div class="row d-flex align-items-stretch">
+        {% for book in books %}  
+        <!-- book start -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4 bookhide book{{book.category.id}} book{{book.status}}">
+          <!-- Card with rounded corners, white background, shadow -->
+          <div class="card shadow-sm" style="background-color: white; border-radius: 15px; direction: ltr;">
+            <!-- Card header -->
+            <div class="card-header text-muted border-bottom-0" style="background-color: white; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+              {{book.category}}
+            </div>
+            <!-- Card body -->
+            <div class="card-body pt-0" style="text-align: left;">
+              <div class="row">
+                <div class="col-7">
+                  <!-- Book title explicitly bold -->
+                  <h2 class="lead font-weight-bold">{{book.title}}</h2>
+                  <ul class="fa-ul text-muted" style="direction: ltr;">
+                    <li class="small"><span class="fa-li"></span>Status: {{book.status}}</li>
+                    {% if book.status == 'rental' %}
+                    <li class="small"><span class="fa-li"></span>Rental Price: {{book.retal_price_day}}</li>
+                    {% else %}
+                    <li class="small"><span class="fa-li"></span>Price: {{book.price}}</li>
+                    {% endif %}
+                  </ul>
+                </div>
+                <div class="col-5 text-center">
+                  {% if book.photo_book %}  
+                  <img style="height: 120px; width: 120px;" src="{{book.photo_book.url}}" alt="" class="img-circle img-fluid">
+                  {% else %}
+                  <img style="height: 120px; width: 120px;" src="{% static 'dist/img/photo1.png' %}" alt="" class="img-circle img-fluid">
+                  {% endif %}  
+                </div>
+              </div>
+            </div>
+            <!-- Card footer with darker gray background -->
+            <div class="card-footer" style="background-color: #e0e0e0; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+              <div class="text-right">
+                <a href="{% url 'delete' book.id %}" class="btn btn-sm bg-danger">
+                  <i class="fas fa-trash"></i>
+                </a>
+                <a href="{% url 'update' book.id %}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-book"></i> Update
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- book end  -->
+        {% endfor %}
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+</div>
 {% endblock %}
