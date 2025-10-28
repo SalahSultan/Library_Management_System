@@ -117,35 +117,51 @@
             <!-- /.col-md-6 -->
           </div>
           <!-- /.row -->
-  
           <!-- form add books -->
-          <div class="row m-1 mb-3">   
-            <a href="#bookform" class="btn btn-primary" data-toggle="collapse">+ Add Book </a>
+          <div class="row m-1 mb-3">
+              <a href="#bookform" class="btn bg-primary" data-toggle="collapse" 
+                style="font-size: 1.5rem; font-weight: 700; border-radius: 10px;">
+                + Add Book
+              </a>
           </div>
-          
+
           <div id="bookform" class="card card-primary collapse">
-            <div class="card-header">
-              <h3 class="card-title"> Add Book </h3>
+              <div class="card-header" style="height: 10%; display: flex; justify-content: center; align-items: center;">
+                  <h3 class="card-title" style="font-size: 2rem; font-weight: 800; margin: 0;">Add Book</h3>
+              </div>
+              <!-- /.card-header -->
+
+              <!-- form start -->
+              <form method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="card-body " style="direction: ltr; padding: 0 1rem; text-align: left; margin-top: 0.5rem;">
+                      <div style="display: flex; flex-direction: column; gap: 10px;">
+                
+                {% for field in form %}
+                <!-- Change: Each field row uses flex to align label and input in one line -->
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    
+                    <!-- Change: Label has fixed min-width so all labels align -->
+                    <label style="min-width: 100px;">{{ field.label }}:</label>
+                    
+                    <!-- Original input field remains unchanged -->
+                    {{ field }}
+                </div>
+                {% endfor %}
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form method="POST" enctype="multipart/form-data"  >
-            {% csrf_token %}   
-              <div class="card-body"> 
-                {{form}}
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Add</button>
-              </div>
-            </form>
+                  </div>
+                  <!-- /.card-body -->
+
+                  <div class="card-footer">
+                      <button type="submit" class="btn btn-primary"
+                      style="font-size: 1.25rem; font-weight: 700; padding: 0.75rem 2rem;">Add</button>
+                  </div>
+              </form>
           </div>
-  
-                <!-- /.card -->
-          </div>
-          <!-- end form add books -->
-  
-  
+          <!-- /.card -->
+
+            <!-- end form add books -->
+
           <!-- Categories -->
   
           <div class="row justify-content-center mb-3">
