@@ -2,71 +2,75 @@
 {% load static %}
 {% block content %}
 <div style="direction: ltr;" class="wrapper">
-  <!-- Content Wrapper. Contains page content -->
+  <!-- Content Wrapper -->
   <div class="content-wrapper p-5">
-    <!-- Content Header (Page header) -->
-    <div class="row mb-2">
+    <!-- Page header -->
+    <div class="row mb-4">
       <div class="col-12">
-        <!-- Centered and bold "Books" title -->
         <h1 class="text-center font-weight-bold">Books</h1>
       </div>
     </div>
 
     <!-- Main content -->
-    <section class="content">                  
+    <section class="content">
       <div class="row d-flex align-items-stretch">
-        {% for book in books %}  
-        <!-- book start -->
-        <div class="col-12 col-sm-6 col-md-4 mb-4 bookhide book{{book.category.id}} book{{book.status}}">
-          <!-- Card with rounded corners, white background, shadow -->
-          <div class="card shadow-sm" style="background-color: white; border-radius: 15px; direction: ltr;">
-            <!-- Card header -->
-            <div class="card-header text-muted border-bottom-0" style="background-color: white; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-              {{book.category}}
+        {% for book in books %}
+        <!-- Book card start -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4 bookhide book{{ book.category.id }} book{{ book.status }}">
+          <div class="card shadow-sm" style="border-radius: 15px; overflow: hidden;">
+            
+            <!-- Card body with book image as background -->
+            {% if book.photo_book %}
+            <div class="card-body text-white" style="
+                  background: url('{{ book.photo_book.url }}') center center / cover no-repeat;
+                  min-height: 220px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: flex-end;
+                  padding: 15px;
+                  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+              ">
+            {% else %}
+            <div class="card-body text-dark" style="
+                  background-color: #f5f5f5;
+                  min-height: 220px;
+                  padding: 15px;
+              ">
+            {% endif %}
+              <h2 class="lead font-weight-bold">{{ book.title }}</h2>
+              <p class="mb-1">Category: {{ book.category }}</p>
+              <p class="mb-1">Status: 
+                {% if book.status == 'available' %}
+                  <span class="text-success">{{ book.status }}</span>
+                {% elif book.status == 'rental' %}
+                  <span class="text-warning">{{ book.status }}</span>
+                {% else %}
+                  <span class="text-danger">{{ book.status }}</span>
+                {% endif %}
+              </p>
+              {% if book.status == 'rental' %}
+                <p class="mb-0">Rental Price: ${{ book.retal_price_day }}</p>
+              {% else %}
+                <p class="mb-0">Price: ${{ book.price }}</p>
+              {% endif %}
             </div>
-            <!-- Card body -->
-            <div class="card-body pt-0" style="text-align: left;">
-              <div class="row">
-                <div class="col-7">
-                  <!-- Book title explicitly bold -->
-                  <h2 class="lead font-weight-bold">{{book.title}}</h2>
-                  <ul class="fa-ul text-muted" style="direction: ltr;">
-                    <li class="small"><span class="fa-li"></span>Status: {{book.status}}</li>
-                    {% if book.status == 'rental' %}
-                    <li class="small"><span class="fa-li"></span>Rental Price: {{book.retal_price_day}}</li>
-                    {% else %}
-                    <li class="small"><span class="fa-li"></span>Price: {{book.price}}</li>
-                    {% endif %}
-                  </ul>
-                </div>
-                <div class="col-5 text-center">
-                  {% if book.photo_book %}  
-                  <img style="height: 120px; width: 120px;" src="{{book.photo_book.url}}" alt="" class="img-circle img-fluid">
-                  {% else %}
-                  <img style="height: 120px; width: 120px;" src="{% static 'dist/img/photo1.png' %}" alt="" class="img-circle img-fluid">
-                  {% endif %}  
-                </div>
-              </div>
+
+            <!-- Card footer with action buttons -->
+            <div class="card-footer d-flex justify-content-end" style="background-color: rgba(0,0,0,0.6);">
+              <a href="{% url 'delete' book.id %}" class="btn btn-sm btn-danger mr-1">
+                <i class="fas fa-trash"></i>
+              </a>
+              <a href="{% url 'update' book.id %}" class="btn btn-sm btn-primary">
+                <i class="fas fa-book"></i> Update
+              </a>
             </div>
-            <!-- Card footer with darker gray background -->
-            <div class="card-footer" style="background-color: #e0e0e0; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
-              <div class="text-right">
-                <a href="{% url 'delete' book.id %}" class="btn btn-sm bg-danger">
-                  <i class="fas fa-trash"></i>
-                </a>
-                <a href="{% url 'update' book.id %}" class="btn btn-sm btn-primary">
-                  <i class="fas fa-book"></i> Update
-                </a>
-              </div>
-            </div>
+
           </div>
         </div>
-        <!-- book end  -->
+        <!-- Book card end -->
         {% endfor %}
       </div>
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
 </div>
 {% endblock %}

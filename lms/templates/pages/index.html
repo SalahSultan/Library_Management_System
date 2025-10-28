@@ -184,7 +184,7 @@
           <div class="row">
 
 
-        {% for book in books %}    
+        {% for book in books|slice:":6" %}    
           <!-- Books -->
               <div id="" class="col-md-4 bookhide book{{book.category.id}} book{{book.status}}">
                   <!-- Widget: user widget style 1 -->
