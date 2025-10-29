@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
-from .forms import BookForm, CategoryForm
-# Create your views here.
+from .forms import BookForm, CategoryForm, SignUpForm, LoginForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 
 def index(request):
@@ -67,3 +70,31 @@ def delete(request, id):
         book_delete.delete()
         return redirect('/')
     return render(request, 'pages/delete.html')
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            messages.success(request, "Account created successfully. Please login.")
+            return redirect('login')
+    else:
+        form = SignUpForm()
+    return render(request, 'pages/signup.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('index')  # redirect to homepage
+    else:
+        form = LoginForm()
+    return render(request, 'pages/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
