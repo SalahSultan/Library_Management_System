@@ -1,10 +1,210 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>Sign Up</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
-</form>
-<p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-{% endblock %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup - LIBER</title>
+<link rel="stylesheet" href="{% static 'bootstrap/bootstrap.css' %}">
+<style>
+    /* ... (Your existing CSS styles remain unchanged here) ... */
+    body {
+        background-color: #f2f2f2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 18px;
+        font-family: Arial, sans-serif;
+    }
+    .card {
+        width: 650px;
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        background-color: white;
+        position: relative;
+    }
+    .card h2 {
+        text-align: center;
+        margin-bottom: 35px;
+        font-size: 32px;
+    }
+    .form-group {
+        /* Adjusted for error display: stack label, input, and error */
+        display: flex;
+        flex-direction: column; 
+        margin-bottom: 25px;
+    }
+    .form-group label {
+        margin-right: 15px;
+        font-weight: bold;
+        font-size: 20px;
+        font-family: Arial, sans-serif;
+        margin-bottom: 5px; /* Space below label */
+    }
+    /* IMPORTANT: This targets the actual input/textarea/select elements */
+    .form-control, .form-group input, .form-group textarea, .form-group select {
+        width: 100%; 
+        padding: 15px;
+        font-size: 18px;
+        border-radius: 12px; 
+        border: 1px solid #ccc;
+        outline: none;
+        box-shadow: none;
+        box-sizing: border-box; /* Ensure padding doesn't affect total width */
+    }
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: none;
+    }
+    .btn-primary {
+        width: 100%;
+        padding: 16px;
+        font-size: 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 12px;
+        border: none;
+        margin-top: 10px;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    .text-center a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .text-center a:hover {
+        text-decoration: underline;
+    }
+    /* Style for errors */
+    .field-error {
+        color: #dc3545; /* Red error text */
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    /* Style for Non-Field Errors container */
+    .alert-danger-static {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    .alert-popup {
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 16px;
+        display: none;
+        z-index: 999;
+        white-space: nowrap;
+    }
+</style>
+</head>
+<body>
+<div class="card">
+    <div class="alert-popup" id="alertPopup"></div>
+
+    <h2>Create Account</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert-danger-static">
+                **Please correct the following errors:**
+                <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username }} 
+            {% for error in form.username.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {% for error in form.email.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+            {% if form.password1.help_text %}
+                <small class="text-muted">{{ form.password1.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+                <div class="field-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+
+    <div class="text-center">
+        Already have an account? <a href="{% url 'login' %}">Log In</a>
+    </div>
+</div>
+
+<script>
+// Logic to show success message if passed via the Django messages framework 
+// (though your view redirects, making this less critical here)
+const popup = document.getElementById('alertPopup');
+const messages = document.querySelectorAll('.alert-danger-static li');
+
+// Check for Django success messages if they were to be displayed after a redirect
+// Note: Your view uses `redirect`, so messages are usually handled on the *next* page (login).
+{% if messages %}
+    {% for message in messages %}
+        {% if 'success' in message.tags %}
+            popup.textContent = "{{ message|escapejs }}";
+            popup.style.display = "block";
+            setTimeout(() => { popup.style.display = "none"; }, 4000);
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+// Fallback to add 'form-control' class using JS if you can't use a library or forms.py
+document.querySelectorAll('.form-group input').forEach(input => {
+    // Only apply to text, email, password types, avoiding things like hidden inputs
+    if (['text', 'email', 'password', 'number'].includes(input.type)) {
+        input.classList.add('form-control');
+    }
+});
+</script>
+</body>
+</html>

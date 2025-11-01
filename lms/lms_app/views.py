@@ -1,100 +1,121 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import *
-from .forms import BookForm, CategoryForm, SignUpForm, LoginForm
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from .models import Book, Category
+from .forms import BookForm, CategoryForm, CustomUserCreationForm
 
 
+
+
+# ---------------------- INDEX ----------------------
+@login_required
 def index(request):
+    # Handle POST requests for adding books or categories
     if request.method == 'POST':
         add_book = BookForm(request.POST, request.FILES)
         if add_book.is_valid():
             add_book.save()
+            messages.success(request, "Book added successfully.")
 
         add_category = CategoryForm(request.POST)
         if add_category.is_valid():
             add_category.save()
+            messages.success(request, "Category added successfully.")
 
-    context={
+    # Prepare context for template
+    context = {
         'category': Category.objects.all(),
-        'books':Book.objects.all(),
-        'form' : BookForm(),
-        'formcat' : CategoryForm(),
-        'allbooks' :Book.objects.filter(active=True).count(),
-        'booksold' :Book.objects.filter(status='sold').count(),
-        'bookrental' :Book.objects.filter(status='rental').count(),
-        'bookavailable' :Book.objects.filter(status='available').count(),
+        'books': Book.objects.all(),
+        'form': BookForm(),
+        'formcat': CategoryForm(),
+        'allbooks': Book.objects.filter(active=True).count(),
+        'booksold': Book.objects.filter(status='sold').count(),
+        'bookrental': Book.objects.filter(status='rental').count(),
+        'bookavailable': Book.objects.filter(status='available').count(),
     }
-    return render(request,'pages/index.html', context)
+    return render(request, 'pages/index.html', context)
 
+
+# ---------------------- BOOKS ----------------------
+@login_required
 def books(request):
     search = Book.objects.all()
-    title = None
-    if 'search_name' in request.GET:
-        title = request.GET['search_name']
-        if title:
-            search = search.filter(title__icontains=title)
+    title = request.GET.get('search_name', None)
+    if title:
+        search = search.filter(title__icontains=title)
 
-
-
-
-    context={
+    context = {
         'category': Category.objects.all(),
-        'books':search,
-        'formcat' : CategoryForm(),
+        'books': search,
+        'formcat': CategoryForm(),
     }
-    return render(request,'pages/books.html',context)
+    return render(request, 'pages/books.html', context)
 
 
-
+# ---------------------- UPDATE BOOK ----------------------
+@login_required
 def update(request, id):
-    book_id = Book.objects.get(id=id)
+    book_instance = get_object_or_404(Book, id=id)
     if request.method == 'POST':
-        book_save = BookForm(request.POST, request.FILES, instance=book_id)
-        if book_save.is_valid():
-            book_save.save()
-            return redirect('/')
-    else: 
-        book_save =BookForm(instance=book_id)
-    context ={
-        'form': book_save,
-    }
-    return render(request, 'pages/update.html', context)
+        form = BookForm(request.POST, request.FILES, instance=book_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Book updated successfully.")
+            return redirect('index')
+    else:
+        form = BookForm(instance=book_instance)
+
+    return render(request, 'pages/update.html', {'form': form})
 
 
+# ---------------------- DELETE BOOK ----------------------
+@login_required
 def delete(request, id):
-    book_delete = get_object_or_404(Book, id=id)
-    if request.method =='POST':
-        book_delete.delete()
-        return redirect('/')
-    return render(request, 'pages/delete.html')
+    book_instance = get_object_or_404(Book, id=id)
+    if request.method == 'POST':
+        book_instance.delete()
+        messages.success(request, "Book deleted successfully.")
+        return redirect('index')
+    return render(request, 'pages/delete.html', {'book': book_instance})
 
+
+# ---------------------- SIGNUP ----------------------
 def signup_view(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            messages.success(request, "Account created successfully. Please login.")
-            return redirect('login')
+            form.save()  # Save the user
+            messages.success(request, "Account created successfully! Please log in.")  # Store success message
+            return redirect('login')  # Redirect to login page
     else:
-        form = SignUpForm()
+        form = CustomUserCreationForm()
+
+    # Render signup page with form (including errors if invalid)
     return render(request, 'pages/signup.html', {'form': form})
 
+# ---------------------- LOGIN ----------------------
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(data=request.POST)
+        form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('index')  # redirect to homepage
+            messages.success(request, f"Welcome, {user.username}!")
+            return redirect('index')
+        else:
+            messages.error(request, "Invalid username or password.")
     else:
-        form = LoginForm()
+        form = AuthenticationForm()
     return render(request, 'pages/login.html', {'form': form})
 
+
+# ---------------------- LOGOUT ----------------------
+@login_required
 def logout_view(request):
     logout(request)
+    messages.info(request, "You have successfully logged out.")
     return redirect('login')
+
